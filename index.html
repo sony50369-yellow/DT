@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>DT Vaccine Planner</title>
+  <meta name="description" content="DT/Tdap/Hexaxim/Tetagam (HTIG)" />
+  <link rel="stylesheet" href="./styles.css" />
+<!-- Icons: Web + iOS + Android (PWA) -->
+<link rel="icon" type="image/png" sizes="48x48" href="./favicon-48x48.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="120x120" href="./apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="152x152" href="./apple-touch-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="167x167" href="./apple-touch-icon-167x167.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon-180x180.png">
+
+<link rel="manifest" href="./site.webmanifest">
+<meta name="theme-color" content="#9ac8ff">
+<meta name="msapplication-config" content="./browserconfig.xml">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>DT Vaccine Planner</h1>
+      <p class="sub">รวมคอร์สวัคซีน</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card summary-card">
+      <header class="card-head">
+        <h2>สรุปการฉีดวันนี้</h2>
+        <div class="chip" id="sum-total">รวมคอร์สวัคซีน: 0 บาท</div>
+      </header>
+      <div class="row" style="align-items:end;">
+        <div class="col">
+          <label class="field">
+            <span class="field-label">วันที่ฉีดวันนี้</span>
+            <input type="date" id="visit-date" value="2025-10-13" />
+          </label>
+        </div>
+        <div class="col">
+          <div class="notice mini" style="margin:0;">
+            ติ๊ก <strong>“รับวัคซีนนี้ร่วมด้วย”</strong> จะแสดง <strong>เข็ม 1, 2, 3…</strong> แยกบรรทัด พร้อมรวมราคา “ทั้งคอร์ส” (เฉพาะวัคซีน)
+          </div>
+        </div>
+      </div>
+      <div id="sum-empty" class="muted">ยังไม่ได้เลือกวัคซีนสำหรับฉีดวันนี้</div>
+      <ol id="sum-list" class="sum-list"></ol>
+      <div class="muted" id="sum-note">* รวมเฉพาะวัคซีน ไม่รวม Tetagam/HTIG (ภูมิคุ้มกันแบบ Passive)</div>
+    </section>
+
+    <section>
+      <h2 class="section-title">เลือกวัคซีน</h2>
+      <div class="drug-grid">
+
+        <article class="card drug-card has-tooltips">
+          <img class="product-img small" src="./dt.png" alt="DT Vaccine" />
+          <div class="title-row"><h3>DT Vaccine (Diphtheria–Tetanus)</h3><span class="chip price">37 บาท/เข็ม</span></div>
+          <div class="mini-row" id="dt-regimen"><div class="mini"><div class="mini-label">Regimen</div><div class="regimen-steps" data-primary="0 – 1 – 6 เดือน" data-booster="Booster 1 เข็ม (แนะนำทุก 10 ปี)">0 – 1 – 6 เดือน</div></div></div>
+          <div class="mini-row"><span class="mini"><span class="mini-label">รูปแบบ</span><span class="btn-group"><input type="radio" name="dt-mode" id="dt-primary" checked /><label for="dt-primary" class="btn">Primary</label><input type="radio" name="dt-mode" id="dt-booster" /><label for="dt-booster" class="btn">Booster</label></span></span><label class="check"><input type="checkbox" id="dt-add" /><span>รับวัคซีนนี้ร่วมด้วย</span></label></div>
+          <div class="mini-row tips-row"><button class="tip" data-tip="tip-dt-crit">เกณฑ์อายุ</button><button class="tip" data-tip="tip-dt-co">ร่วมฉีด</button></div>
+          <details class="drug-details compact"><summary>รายละเอียด</summary><ul><li>Toxoid (เชื้อตาย) • IM 0.5 mL</li><li>ข้อห้าม: แพ้รุนแรงต่อส่วนประกอบ/เข็มก่อน</li><li>เก็บรักษา: 2–8°C, ห้ามแช่แข็ง</li></ul></details>
+          <div class="tooltip" id="tip-dt-crit"><b>เกณฑ์</b>: Primary สำหรับผู้ไม่เคย/ไม่ครบ; Booster แนะนำทุก 10 ปี</div>
+          <div class="tooltip" id="tip-dt-co"><b>ร่วมฉีด</b>: ร่วมกับวัคซีนชนิดอื่นได้ในวันเดียวกัน ฉีดคนละตำแหน่ง/เข็ม</div>
+        </article>
+
+        <article class="card drug-card has-tooltips">
+          <img class="product-img small" src="./dt_child.png" alt="DT เด็ก" />
+          <div class="title-row"><h3>DT (เด็ก)</h3><span class="chip price">37 บาท/เข็ม</span></div>
+          <div class="mini"><div class="mini-label">Regimen</div><div class="regimen-steps">0 – 1 – 6 เดือน</div></div>
+          <div class="mini-row"><span></span><label class="check"><input type="checkbox" id="kid-add" /><span>รับวัคซีนนี้ร่วมด้วย</span></label></div>
+          <div class="mini-row tips-row"><button class="tip" data-tip="tip-dtk-crit">เกณฑ์อายุ</button><button class="tip" data-tip="tip-dtk-co">ร่วมฉีด</button></div>
+          <details class="drug-details compact"><summary>รายละเอียด</summary><ul><li>ใช้เมื่อมีข้อห้ามต่อวัคซีนไอกรน (pertussis) • IM 0.5 mL</li></ul></details>
+          <div class="tooltip" id="tip-dtk-crit"><b>เกณฑ์</b>: สูตรเด็ก ใช้แทน DTP/DTaP เมื่อมีข้อห้ามต่อ pertussis</div>
+          <div class="tooltip" id="tip-dtk-co"><b>ร่วมฉีด</b>: ให้ร่วมกับวัคซีนเด็กอื่นได้ (คนละตำแหน่ง)</div>
+        </article>
+
+        <article class="card drug-card has-tooltips">
+          <img class="product-img small" src="./uni5.png" alt="Uni5" />
+          <div class="title-row"><h3>Uni5 (Pentavalent)</h3><span class="chip price">632 บาท/เข็ม</span></div>
+          <div class="mini"><div class="mini-label">Regimen</div><div class="regimen-steps">2, 4, 6 เดือน</div></div>
+          <div class="mini-row"><span></span><label class="check"><input type="checkbox" id="uni5-add" /><span>รับวัคซีนนี้ร่วมด้วย</span></label></div>
+          <div class="mini-row tips-row"><button class="tip" data-tip="tip-uni5-crit">เกณฑ์อายุ</button><button class="tip" data-tip="tip-uni5-co">ร่วมฉีด</button></div>
+          <details class="drug-details compact"><summary>รายละเอียด</summary><ul><li>DTP-HepB-Hib (เชื้อตาย) • IM 0.5 mL</li></ul></details>
+          <div class="tooltip" id="tip-uni5-crit"><b>เกณฑ์</b>: ทารกตามตารางวัคซีน 2–4–6 เดือน</div>
+          <div class="tooltip" id="tip-uni5-co"><b>ร่วมฉีด</b>: ร่วมกับวัคซีนทารกอื่น (เช่น PCV/Rotavirus) ได้ คนละตำแหน่ง</div>
+        </article>
+
+        <article class="card drug-card has-tooltips">
+          <img class="product-img small" src="./hexaxim.png" alt="Hexaxim" />
+          <div class="title-row"><h3>Hexaxim (DTaP‑IPV‑HepB‑Hib)</h3><span class="chip price">1450 บาท/เข็ม</span></div>
+          <div class="mini"><div class="mini-label">Regimen</div><div class="regimen-steps">2, 4, 6 เดือน</div></div>
+          <div class="mini-row"><span></span><label class="check"><input type="checkbox" id="hexaxim-add" /><span>รับวัคซีนนี้ร่วมด้วย</span></label></div>
+          <div class="mini-row tips-row"><button class="tip" data-tip="tip-hex-crit">เกณฑ์อายุ</button><button class="tip" data-tip="tip-hex-co">ร่วมฉีด</button></div>
+          <details class="drug-details compact"><summary>รายละเอียด</summary><ul><li>รวม 6 โรค: DTaP, IPV, HepB, Hib</li><li>IM 0.5 mL • เก็บ 2–8°C (ห้ามแช่แข็ง)</li></ul></details>
+          <div class="tooltip" id="tip-hex-crit"><b>เกณฑ์</b>: ทารก ≥6 สัปดาห์ ใช้เป็นตาราง 2–4–6 เดือน</div>
+          <div class="tooltip" id="tip-hex-co"><b>ร่วมฉีด</b>: ร่วมกับวัคซีนเด็กอื่นได้ในวันเดียวกัน (คนละตำแหน่ง)</div>
+        </article>
+
+        <article class="card drug-card has-tooltips">
+          <img class="product-img small" src="./boostagen.png" alt="Boostagen Tdap" />
+          <div class="title-row"><h3>Boostagen Tdap</h3><span class="chip price">644 บาท/เข็ม</span></div>
+          <div class="mini"><div class="mini-label">Regimen</div><div class="regimen-steps">Booster 1 เข็ม (ทุก 10 ปี)</div></div>
+          <div class="mini-row"><span></span><label class="check"><input type="checkbox" id="boostagen-add" /><span>รับวัคซีนนี้ร่วมด้วย</span></label></div>
+          <div class="mini-row tips-row"><button class="tip" data-tip="tip-bgen-crit">เกณฑ์อายุ</button><button class="tip" data-tip="tip-bgen-co">ร่วมฉีด</button></div>
+          <details class="drug-details compact"><summary>รายละเอียด</summary><ul><li>Tdap booster • IM 0.5 mL</li></ul></details>
+          <div class="tooltip" id="tip-bgen-crit"><b>เกณฑ์</b>: เด็กโต/ผู้ใหญ่ที่ต้องกระตุ้นคอตีบ-บาดทะยัก-ไอกรน</div>
+          <div class="tooltip" id="tip-bgen-co"><b>ร่วมฉีด</b>: ร่วมกับวัคซีนอื่นได้ (คนละตำแหน่ง)</div>
+        </article>
+
+        <article class="card drug-card has-tooltips">
+          <img class="product-img small" src="./boostrix.png" alt="Boostrix" />
+          <div class="title-row"><h3>Boostrix</h3><span class="chip price">582 บาท/เข็ม</span></div>
+          <div class="mini"><div class="mini-label">Regimen</div><div class="regimen-steps">Booster 1 เข็ม (ทุก 10 ปี)</div></div>
+          <div class="mini-row"><span></span><label class="check"><input type="checkbox" id="boostrix-add" /><span>รับวัคซีนนี้ร่วมด้วย</span></label></div>
+          <div class="mini-row tips-row"><button class="tip" data-tip="tip-brix-crit">เกณฑ์อายุ</button><button class="tip" data-tip="tip-brix-co">ร่วมฉีด</button></div>
+          <details class="drug-details compact"><summary>รายละเอียด</summary><ul><li>Tdap booster • IM 0.5 mL</li></ul></details>
+          <div class="tooltip" id="tip-brix-crit"><b>เกณฑ์</b>: เด็กโต/ผู้ใหญ่ใช้เป็น Booster</div>
+          <div class="tooltip" id="tip-brix-co"><b>ร่วมฉีด</b>: ร่วมกับวัคซีนอื่นได้ (คนละตำแหน่ง)</div>
+        </article>
+
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">ผลิตภัณฑ์ภูมิคุ้มกัน (ไม่ใช่วัคซีน)</h2>
+      <div class="drug-grid">
+        <article class="card drug-card has-tooltips">
+          <img class="product-img small" src="./tetanusgamma.png" alt="Tetagam (HTIG)" />
+          <div class="title-row"><h3>Tetagam (Human TIG)</h3><span class="chip price">747 บาท/โดส</span></div>
+          <div class="mini"><div class="mini-label">การให้</div><div class="regimen-steps">IM ครั้งเดียว ตามข้อบ่งใช้</div></div>
+          <div class="mini-row"><span class="muted">ฉีดตำแหน่งคนละข้างกับวัคซีน</span><label class="check"><input type="checkbox" id="tig-add" /><span>ให้ร่วมวันนี้</span></label></div>
+          <div class="mini-row tips-row"><button class="tip" data-tip="tip-tig-crit">เกณฑ์ใช้</button><button class="tip" data-tip="tip-tig-co">ร่วมฉีด</button></div>
+          <details class="drug-details compact"><summary>รายละเอียด</summary><ul><li>Human Tetanus Immunoglobulin (HTIG): ให้ภูมิคุ้มกันทันทีในแผลเสี่ยง</li><li>ตัวอย่างขนาด: 250 IU IM (พิจารณา 500 IU ในแผลสกปรก/ปนเปื้อนมาก/แผลใหญ่นาน)</li><li>แนะนำให้คู่กับวัคซีนคอตีบ-บาดทะยัก เมื่อประวัติวัคซีนไม่ครบ/ไม่แน่ชัด</li></ul></details>
+          <div class="tooltip" id="tip-tig-crit"><b>เกณฑ์</b>: แผลสกปรก/เสี่ยงสูง และประวัติวัคซีนไม่ครบ/ไม่แน่ชัด พิจารณาให้ HTIG</div>
+          <div class="tooltip" id="tip-tig-co"><b>ร่วมฉีด</b>: ให้ร่วมกับ DT/Tdap ได้ โดยฉีดคนละตำแหน่ง (HTIG ไม่รวมใน “ราคารวมคอร์สวัคซีน”)</div>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer"><div class="container"><span>© 2025 ภก.กันตพงศ์ วงศ์เอนกเกษม</span></div></footer>
+  <script src="./script.js"></script>
+</body></html>
